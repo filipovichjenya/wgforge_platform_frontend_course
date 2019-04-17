@@ -27,5 +27,41 @@
  * //    }
  */
 export default function deepMerge(destinationObject, sourceObject) {
-  // ¯\_(ツ)_/¯
+  function iterator(object) {
+
+    let keyIndex = 0;
+    const arrayKeys = [];
+    for (let key in object) {
+      arrayKeys.push(key);
+    }
+
+    return {
+      [Symbol.iterator]: function () {
+        return {
+          next() {
+            return {
+
+              done: keyIndex >= arrayKeys.length,
+              value: [arrayKeys[keyIndex], object[arrayKeys[keyIndex++]]]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  for (let [sourceIndex, sourceProp] of iterator(sourceObject)) {
+    if (typeof sourceProp === 'undefined' && destinationObject.hasOwnProperty(sourceIndex)) {
+            continue;
+    } else if (typeof sourceProp === 'object' && sourceProp !== null) {
+
+      destinationObject[sourceIndex] = deepMerge(destinationObject[sourceIndex], sourceProp)
+    } else if (typeof destinationObject !== 'undefined') {
+
+      destinationObject[sourceIndex] = sourceProp
+    }
+  }
+
+  return destinationObject
 }
+
