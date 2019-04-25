@@ -10,6 +10,12 @@
  *  zipObject(['a', 'b'], [1, 2]);
  *  // => { 'a': 1, 'b': 2 }
  */
-export default function zipObject() {
-  // ¯\_(ツ)_/¯
+export default function zipObject(arrayOfIndexes, arrayOfProperties) {
+  if (!Array.isArray(arrayOfIndexes) || !Array.isArray(arrayOfProperties)) {
+    throw new TypeError('argument should be an array');
+  }
+  const resultObj = {};
+  arrayOfIndexes.forEach((prop, index) => resultObj[prop] = arrayOfProperties[index]);
+
+  return resultObj;
 }
